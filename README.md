@@ -22,4 +22,4 @@ module.exports = {
 ### Mobile
 
 - Open the file `~/mobile/src/services/config.js` and configure your IP Address accordingly.
-- Go back to `~/mobile` and run `yarn && react-native run-android` for android environment, or `yarn && react-native run-ios` for iOS environment.
+- Go back to `~/mobile` and run `yarn && react-native link react-native-image-picker && react-native link react-native-gesture-handler && react-native run-android` for android environment, or `yarn && react-native link react-native-image-picker && react-native link react-native-gesture-handler && react-native run-ios` for iOS environment.
