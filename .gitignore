@@ -1,6 +1,6 @@
 resized/*
 
-database.js
+backend/src/config/database.js
 # Logs
 logs
 *.log
