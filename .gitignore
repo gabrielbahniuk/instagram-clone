@@ -1,6 +1,6 @@
 ## avoid to upload
-*.jpg
-*.jpeg
+**/*.jpg
+**/*.jpeg
 
 **/database.js
 
