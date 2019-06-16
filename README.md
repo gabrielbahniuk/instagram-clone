@@ -2,39 +2,23 @@
 
 ### Backend
 
-- Create a free MongoDB instance to test e.g. in MongoAtlas.
-- Create a `database.js` file under `~/backend/src/config` and put the content below within the file, changing your connection data from the instance you've just created:
-```
-module.exports = {
-  dbUsername: '<YOUR_USERNAME>',
-  dbPassword: '<YOUR_PASSWORD>',
-  dbServer: '<YOUR_SERVER>',
-  dbInstance: '<YOUR_INSTANCE>',
-}
-```
+- Set up a MongoDB instance e.g. in MongoAtlas or localhost.
+- Create a file `.env` under `~/backend`.
+- Configure the environment variable `MONGO_URL` within `.env` file. 
 - Under `~/backend` run `yarn && yarn dev` and it's done!
 - Now you can access it in your browser `http://localhost:3333/posts`
 
 #### Choosing between Local repository or Amazon S3.
-- You can choose where your images will be saved.
-To do so, first create a bucket on Amazon S3, and update the file `~/backend/config/uploads.js` in the following line with the bucket name:
-
-`bucket: 'uploadexample2332',`
-
-and in the same file, be sure the module exports `s3` is set, as follows:
-`storage: storageTypes['s3'],`
-
-- Create a file called `.env` under `~/backend` with the following lines:
+- You can choose where your images will be saved: localhost or s3.
+To do so, first create a bucket on Amazon S3. After, update in the file `~/backend/.env` accordingly:
+- `STORAGE_TYPE`: accepts the values `s3` or `local`.
+- `AWS_BUCKET_NAME`: the bucket name you've just created on Amazon S3.
+- Also update the variables below according to your personal information on S3:
 ```
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_DEFAULT_REGION=
 ```
-
-- Fill the gaps with your personal information from your Amazon S3 bucket.
-
-- After that you should be able to upload to your S3 Bucket instead of local folder.
-
 
 ### Frontend
 
