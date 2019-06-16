@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import io from 'socket.io-client'
-import api from '../services/api'
-
+import React, { Component } from 'react';
+import io from 'socket.io-client';
+import api from '../services/api';
+import config from '../services/config';
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList
-} from 'react-native'
+} from 'react-native';
 
-import camera from '../assets/camera.png'
-import more from '../assets/more.png'
-import like from '../assets/like.png'
-import comment from '../assets/comment.png'
-import send from '../assets/send.png'
+import camera from '../assets/camera.png';
+import more from '../assets/more.png';
+import like from '../assets/like.png';
+import comment from '../assets/comment.png';
+import send from '../assets/send.png';
 
 export default class Feed extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -27,38 +27,38 @@ export default class Feed extends Component {
         <Image source={camera} />
       </TouchableOpacity>
     )
-  })
+  });
 
   state = {
     feed: []
-  }
+  };
 
   async componentDidMount() {
-    this.registerSocket()
-    const response = await api.get('posts')
+    this.registerSocket();
+    const response = await api.get('posts');
 
-    this.setState({ feed: response.data })
+    this.setState({ feed: response.data });
   }
 
   registerSocket = () => {
-    const socket = io(`http://10.0.3.2:3333`)
+    const socket = io(`http://${config.ipAddress}:3333`);
 
     socket.on('post', newPost => {
-      this.setState({ feed: [newPost, ...this.state.feed] })
-    })
+      this.setState({ feed: [newPost, ...this.state.feed] });
+    });
 
     socket.on('like', likedPost => {
       this.setState({
         feed: this.state.feed.map(post =>
           post._id === likedPost._id ? likedPost : post
         )
-      })
-    })
-  }
+      });
+    });
+  };
 
   handleLike = id => {
-    api.post(`/posts/${id}/like`)
-  }
+    api.post(`/posts/${id}/like`);
+  };
 
   render() {
     return (
@@ -78,7 +78,9 @@ export default class Feed extends Component {
 
               <Image
                 style={styles.feedImage}
-                source={{ uri: `http://10.0.3.2:3333/files/${item.image}` }}
+                source={{
+                  uri: `http://${config.ipAddress}:3333/files/${item.image}`
+                }}
               />
 
               <View style={styles.feedItemFooter}>
@@ -105,7 +107,7 @@ export default class Feed extends Component {
           )}
         />
       </View>
-    )
+    );
   }
 }
 
@@ -157,4 +159,4 @@ const styles = StyleSheet.create({
   hashtags: {
     color: '#7159c1'
   }
-})
+});

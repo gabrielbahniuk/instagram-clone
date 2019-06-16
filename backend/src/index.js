@@ -2,8 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
 const {
   dbUsername,
   dbPassword,
@@ -11,6 +9,8 @@ const {
   dbInstance
 } = require('./config/database');
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 app.use((req, res, next) => {
   req.io = io;
