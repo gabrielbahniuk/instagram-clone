@@ -1,7 +1,5 @@
 !*.keep
 
-**/database.js
-
 # Logs
 logs
 *.log

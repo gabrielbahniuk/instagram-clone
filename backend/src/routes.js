@@ -8,6 +8,6 @@ const upload = multer(uploadConfig);
 
 router.get('/posts', PostController.index);
 router.post('/posts', upload.single('image'), PostController.store);
+router.delete('/posts/:id', PostController.delete);
 router.post('/posts/:id/like', LikeController.store);
-
 module.exports = router;
