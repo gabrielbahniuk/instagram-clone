@@ -1,7 +1,3 @@
-## avoid to upload
-**/*.jpg
-**/*.jpeg
-
 **/database.js
 
 # Logs
