@@ -3,6 +3,7 @@ section#post-list {
   max-width: 580px;
   margin: 0 auto;
   padding: 0 30px;
+  display: flex;
 }
 
 section#post-list article {
@@ -22,6 +23,18 @@ section#post-list article header {
 section#post-list article header .user-info {
   display: flex;
   flex-direction: column;
+}
+section#post-list #no-posts {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 30vh;
+}
+
+section#post-list #no-posts p {
+  color: #999;
+  font-size: 18px;
 }
 
 section#post-list article header .user-info span {

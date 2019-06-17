@@ -8,7 +8,8 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Dimensions
 } from 'react-native';
 
 import camera from '../assets/camera.png';
@@ -60,12 +61,21 @@ export default class Feed extends Component {
     api.post(`/posts/${id}/like`);
   };
 
+  _emptyComponent = () => {
+    return (
+      <View style={styles.noPostContainer}>
+        <Text style={styles.noPostText}>Não há post cadastrado!</Text>
+      </View>
+    );
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <FlatList
           data={this.state.feed}
           keyExtractor={post => post._id}
+          ListEmptyComponent={this._emptyComponent}
           renderItem={({ item }) => (
             <View style={styles.feedItem}>
               <View style={styles.feedItemHeader}>
@@ -75,11 +85,11 @@ export default class Feed extends Component {
                 </View>
                 <Image source={more} />
               </View>
-
+              {console.log(item)}
               <Image
                 style={styles.feedImage}
                 source={{
-                  uri: `http://${config.ipAddress}:3333/files/${item.image}`
+                  uri: `http://${config.ipAddress}:3333/files/${item.key}`
                 }}
               />
 
@@ -158,5 +168,15 @@ const styles = StyleSheet.create({
   },
   hashtags: {
     color: '#7159c1'
+  },
+  noPostContainer: {
+    lineHeight: 20,
+    marginTop: Dimensions.get('window').height / 3,
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  noPostText: {
+    fontSize: 18,
+    color: '#000'
   }
 });
