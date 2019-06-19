@@ -32,6 +32,8 @@ module.exports = {
 
     await post.remove();
 
+    req.io.emit('delete', req.params.id);
+
     res.json({ msg: 'Post removido com sucesso' });
   }
 };
