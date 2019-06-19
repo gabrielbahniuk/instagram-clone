@@ -1,18 +1,29 @@
 import React, { Component } from 'react';
 import api from '../services/api';
 import io from 'socket.io-client';
-
 import './Feed.css';
-
-import more from '../assets/more.svg';
-import like from '../assets/like.svg';
-import likeActive from '../assets/like-active.svg';
-import comment from '../assets/comment.svg';
-import send from '../assets/send.svg';
+import Post from '../components/Post';
 
 class Feed extends Component {
   state = {
+    toggleMenu: {
+      id: null,
+      isMenuVisible: false
+    },
     feed: []
+  };
+
+  handleToggleMenu = postId => {
+    this.setState({
+      toggleMenu: {
+        id: postId,
+        isMenuVisible: !this.state.toggleMenu.isMenuVisible
+      }
+    });
+  };
+
+  handleDeletePost = id => {
+    api.delete(`/posts/${id}`);
   };
 
   async componentDidMount() {
@@ -32,6 +43,12 @@ class Feed extends Component {
       this.setState({ feed: [newPost, ...this.state.feed] });
     });
 
+    socket.on('delete', removedId => {
+      this.setState({
+        feed: this.state.feed.filter(post => removedId !== post._id)
+      });
+    });
+
     socket.on('like', likedPost => {
       this.setState({
         feed: this.state.feed.map(post =>
@@ -44,43 +61,20 @@ class Feed extends Component {
   render() {
     return (
       <section id="post-list">
-        {this.state.feed.length == 0 ? (
+        {this.state.feed.length === 0 ? (
           <div id="no-posts">
             <p>Não há posts cadastrados!</p>
           </div>
         ) : (
           this.state.feed.map(post => (
-            <article key={post._id}>
-              <header>
-                <div className="user-info">
-                  <span>{post.author}</span>
-                  <span className="place">{post.place}</span>
-                </div>
-
-                <img src={more} alt="Mais" />
-              </header>
-              <img src={`http://localhost:3333/files/${post.key}`} alt="" />
-
-              <footer>
-                <div className="actions">
-                  <button
-                    type="button"
-                    onClick={() => this.handleLike(post._id)}
-                  >
-                    <img src={post.likes ? likeActive : like} alt="" />
-                  </button>
-                  <img src={comment} alt="" />
-                  <img src={send} alt="" />
-                </div>
-
-                <strong>{post.likes} curtidas</strong>
-
-                <p>
-                  {post.description}
-                  <span>{post.hashtags}</span>
-                </p>
-              </footer>
-            </article>
+            <Post
+              key={post._id}
+              toggleMenu={this.state.toggleMenu}
+              post={post}
+              handleToggleMenu={this.handleToggleMenu}
+              handleLike={this.handleLike}
+              handleDeletePost={this.handleDeletePost}
+            />
           ))
         )}
       </section>

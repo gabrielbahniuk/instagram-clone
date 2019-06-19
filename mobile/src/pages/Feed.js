@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
+import { MenuProvider } from 'react-native-popup-menu';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from 'react-native-popup-menu';
+import { ToastAndroid } from 'react-native';
 import api from '../services/api';
 import config from '../services/config';
 import {
@@ -48,6 +56,12 @@ export default class Feed extends Component {
       this.setState({ feed: [newPost, ...this.state.feed] });
     });
 
+    socket.on('delete', removedId => {
+      this.setState({
+        feed: this.state.feed.filter(post => removedId !== post._id)
+      });
+    });
+
     socket.on('like', likedPost => {
       this.setState({
         feed: this.state.feed.map(post =>
@@ -69,54 +83,76 @@ export default class Feed extends Component {
     );
   };
 
+  deletePost = id => {
+    api.delete(`/posts/${id}`);
+    ToastAndroid.showWithGravity(
+      'Post was successfully removed!',
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
+    );
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={this.state.feed}
-          keyExtractor={post => post._id}
-          ListEmptyComponent={this._emptyComponent}
-          renderItem={({ item }) => (
-            <View style={styles.feedItem}>
-              <View style={styles.feedItemHeader}>
-                <View style={styles.userInfo}>
-                  <Text style={styles.name}>{item.author}</Text>
-                  <Text style={styles.place}>{item.place}</Text>
+      <MenuProvider>
+        <View style={styles.container}>
+          <FlatList
+            data={this.state.feed}
+            keyExtractor={post => post._id}
+            ListEmptyComponent={this._emptyComponent}
+            renderItem={({ item }) => (
+              <View style={styles.feedItem}>
+                <View style={styles.feedItemHeader}>
+                  <View style={styles.userInfo}>
+                    <Text style={styles.name}>{item.author}</Text>
+                    <Text style={styles.place}>{item.place}</Text>
+                  </View>
+                  <Menu>
+                    <MenuTrigger>
+                      <Image source={more} />
+                    </MenuTrigger>
+                    <MenuOptions>
+                      <MenuOption>
+                        <Text>Editar</Text>
+                      </MenuOption>
+                      <MenuOption onSelect={() => this.deletePost(item._id)}>
+                        <Text>Excluir</Text>
+                      </MenuOption>
+                    </MenuOptions>
+                  </Menu>
                 </View>
-                <Image source={more} />
-              </View>
-              {console.log(item)}
-              <Image
-                style={styles.feedImage}
-                source={{
-                  uri: `http://${config.ipAddress}:3333/files/${item.key}`
-                }}
-              />
+                <Image
+                  style={styles.feedImage}
+                  source={{
+                    uri: `http://${config.ipAddress}:3333/files/${item.key}`
+                  }}
+                />
 
-              <View style={styles.feedItemFooter}>
-                <View style={styles.actions}>
-                  <TouchableOpacity
-                    style={styles.action}
-                    onPress={() => this.handleLike(item._id)}
-                  >
-                    <Image source={like} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.action} onPress={() => {}}>
-                    <Image source={comment} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.action} onPress={() => {}}>
-                    <Image source={send} />
-                  </TouchableOpacity>
+                <View style={styles.feedItemFooter}>
+                  <View style={styles.actions}>
+                    <TouchableOpacity
+                      style={styles.action}
+                      onPress={() => this.handleLike(item._id)}
+                    >
+                      <Image source={like} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.action} onPress={() => {}}>
+                      <Image source={comment} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.action} onPress={() => {}}>
+                      <Image source={send} />
+                    </TouchableOpacity>
+                  </View>
+
+                  <Text style={styles.likes}>{item.likes} curtidas</Text>
+                  <Text style={styles.description}>{item.description}</Text>
+                  <Text style={styles.hashtags}>{item.hashtags}</Text>
                 </View>
-
-                <Text style={styles.likes}>{item.likes} curtidas</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                <Text style={styles.hashtags}>{item.hashtags}</Text>
               </View>
-            </View>
-          )}
-        />
-      </View>
+            )}
+          />
+        </View>
+      </MenuProvider>
     );
   }
 }
