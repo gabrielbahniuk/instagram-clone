@@ -24,7 +24,11 @@ module.exports = {
 
     req.io.emit('post', post);
 
-    return res.json(post);
+    return res.json({
+      title: 'Create post',
+      message: 'Post successfully created.',
+      post
+    });
   },
 
   async delete(req, res) {
@@ -34,6 +38,6 @@ module.exports = {
 
     req.io.emit('delete', req.params.id);
 
-    res.json({ msg: 'Post removido com sucesso' });
+    res.json({ message: 'Post successfully removed.' });
   }
 };

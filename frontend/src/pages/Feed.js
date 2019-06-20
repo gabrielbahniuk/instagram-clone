@@ -1,16 +1,39 @@
 import React, { Component } from 'react';
 import api from '../services/api';
 import io from 'socket.io-client';
-import './Feed.css';
+import Loader from 'react-loader-spinner';
 import Post from '../components/Post';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import './Feed.css';
 
 class Feed extends Component {
+  constructor(props) {
+    super(props);
+    this.notificationDOMRef = React.createRef();
+  }
+
   state = {
     toggleMenu: {
       id: null,
       isMenuVisible: false
     },
-    feed: []
+    feed: [],
+    loading: false
+  };
+
+  addNotification = (title, message, type) => {
+    this.notificationDOMRef.current.addNotification({
+      title,
+      message,
+      type,
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: { duration: 2000 },
+      dismissable: { click: true }
+    });
   };
 
   handleToggleMenu = postId => {
@@ -23,17 +46,45 @@ class Feed extends Component {
   };
 
   handleDeletePost = id => {
-    api.delete(`/posts/${id}`);
+    api
+      .delete(`/posts/${id}`)
+      .then(response => {
+        const { message } = response.data;
+        this.addNotification('Delete post', message, 'success');
+      })
+      .catch(error => {
+        this.addNotification('Error', 'Please try again later.', 'danger');
+      });
   };
 
   async componentDidMount() {
     this.socketRegister();
-    const response = await api.get('/posts');
-    this.setState({ feed: response.data });
+    this.setState({ loading: true });
+    await api
+      .get('/posts')
+      .then(response => {
+        this.setState({ feed: response.data, loading: false });
+      })
+      .catch(error => {
+        this.addNotification(
+          'Error',
+          'Could not load posts. Please try again later.',
+          'danger'
+        );
+        this.setState({ loading: false });
+      });
   }
 
   handleLike = id => {
-    api.post(`/posts/${id}/like`);
+    api
+      .post(`/posts/${id}/like`)
+      .then(response => {
+        const { message } = response.data;
+        this.addNotification('Like', message, 'success');
+      })
+      .catch(error => {
+        this.addNotification('Error', 'Please try again later.', 'danger');
+      });
   };
 
   socketRegister = () => {
@@ -41,6 +92,7 @@ class Feed extends Component {
 
     socket.on('post', newPost => {
       this.setState({ feed: [newPost, ...this.state.feed] });
+      console.log(newPost);
     });
 
     socket.on('delete', removedId => {
@@ -61,9 +113,9 @@ class Feed extends Component {
   render() {
     return (
       <section id="post-list">
-        {this.state.feed.length === 0 ? (
-          <div id="no-posts">
-            <p>Não há posts cadastrados!</p>
+        {this.state.loading ? (
+          <div className="loader">
+            <Loader type="Oval" color="#000" height="80" width="80" />
           </div>
         ) : (
           this.state.feed.map(post => (
@@ -77,9 +129,9 @@ class Feed extends Component {
             />
           ))
         )}
+        <ReactNotification ref={this.notificationDOMRef} />
       </section>
     );
   }
 }
-
 export default Feed;

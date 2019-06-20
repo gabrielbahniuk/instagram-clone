@@ -7,7 +7,6 @@ import {
   MenuOption,
   MenuTrigger
 } from 'react-native-popup-menu';
-import { ToastAndroid } from 'react-native';
 import api from '../services/api';
 import config from '../services/config';
 import {
@@ -17,7 +16,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Dimensions
+  Dimensions,
+  ToastAndroid
 } from 'react-native';
 
 import camera from '../assets/camera.png';
@@ -78,18 +78,28 @@ export default class Feed extends Component {
   _emptyComponent = () => {
     return (
       <View style={styles.noPostContainer}>
-        <Text style={styles.noPostText}>Não há post cadastrado!</Text>
+        <Text style={styles.noPostText}>No posts to show.</Text>
       </View>
     );
   };
 
   deletePost = id => {
-    api.delete(`/posts/${id}`);
-    ToastAndroid.showWithGravity(
-      'Post was successfully removed!',
-      ToastAndroid.SHORT,
-      ToastAndroid.CENTER
-    );
+    api
+      .delete(`/posts/${id}`)
+      .then(response => {
+        ToastAndroid.showWithGravity(
+          'Post was successfully removed!',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
+      })
+      .catch(err => {
+        ToastAndroid.showWithGravity(
+          'Error while removing post.',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
+      });
   };
 
   render() {
@@ -113,10 +123,10 @@ export default class Feed extends Component {
                     </MenuTrigger>
                     <MenuOptions>
                       <MenuOption>
-                        <Text>Editar</Text>
+                        <Text>Edit</Text>
                       </MenuOption>
                       <MenuOption onSelect={() => this.deletePost(item._id)}>
-                        <Text>Excluir</Text>
+                        <Text>Delete</Text>
                       </MenuOption>
                     </MenuOptions>
                   </Menu>
@@ -144,7 +154,7 @@ export default class Feed extends Component {
                     </TouchableOpacity>
                   </View>
 
-                  <Text style={styles.likes}>{item.likes} curtidas</Text>
+                  <Text style={styles.likes}>{item.likes} likes</Text>
                   <Text style={styles.description}>{item.description}</Text>
                   <Text style={styles.hashtags}>{item.hashtags}</Text>
                 </View>

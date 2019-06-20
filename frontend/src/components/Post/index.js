@@ -37,12 +37,11 @@ export default class Post extends Component {
                   visibility: toggleMenu.isMenuVisible ? 'visible' : 'hidden'
                 }}
               >
-                <button>
-                  <p>Editar</p>
+                <button id="button-edit">
+                  <p>Edit</p>
                 </button>
-                <hr id="menu-separator" />
                 <button onClick={() => handleDeletePost(post._id)}>
-                  <p>Excluir</p>
+                  <p>Delete</p>
                 </button>
               </div>
             )}

@@ -1,3 +1,14 @@
+button#button-edit {
+  border-bottom: 1px solid #ccc;
+}
+div.loader {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
 button.btn-more {
   border: none;
   background-color: transparent;
@@ -10,11 +21,6 @@ div.toggle-menu {
   border: 0.1em solid #ccc;
 }
 
-hr#menu-separator {
-  width: 70%;
-  margin: 0 auto;
-}
-
 div.toggle-menu button {
   -webkit-font-smoothing: antialiased;
   border: none;
@@ -24,6 +30,7 @@ div.toggle-menu button {
   justify-content: center;
   align-items: center;
   background-color: #ffe;
+  cursor: pointer;
 }
 
 div.toggle-menu button > p {

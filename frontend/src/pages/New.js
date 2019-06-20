@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
-import api from '../services/api'
-
-import './New.css'
+import React, { Component } from 'react';
+import api from '../services/api';
+import './New.css';
 
 class New extends Component {
   state = {
@@ -10,31 +9,30 @@ class New extends Component {
     place: '',
     description: '',
     hashtags: ''
-  }
+  };
 
   handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
-  }
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
   handleImageChange = e => {
-    this.setState({ image: e.target.files[0] })
-  }
+    this.setState({ image: e.target.files[0] });
+  };
 
   handleSubmit = async e => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const data = new FormData()
+    const data = new FormData();
 
-    data.append('image', this.state.image)
-    data.append('author', this.state.author)
-    data.append('place', this.state.place)
-    data.append('description', this.state.description)
-    data.append('hashtags', this.state.hashtags)
+    data.append('image', this.state.image);
+    data.append('author', this.state.author);
+    data.append('place', this.state.place);
+    data.append('description', this.state.description);
+    data.append('hashtags', this.state.hashtags);
 
-    await api.post('/posts', data)
-
-    this.props.history.push('/')
-  }
+    await api.post('/posts', data);
+    this.props.history.push('/');
+  };
 
   render() {
     return (
@@ -44,7 +42,7 @@ class New extends Component {
         <input
           type="text"
           name="author"
-          placeholder="Autor do post"
+          placeholder="Post author..."
           onChange={this.handleChange}
           value={this.state.author}
         />
@@ -52,7 +50,7 @@ class New extends Component {
         <input
           type="text"
           name="place"
-          placeholder="Local do post"
+          placeholder="Place..."
           onChange={this.handleChange}
           value={this.state.place}
         />
@@ -60,7 +58,7 @@ class New extends Component {
         <input
           type="text"
           name="description"
-          placeholder="Descrição do post"
+          placeholder="Description..."
           onChange={this.handleChange}
           value={this.state.description}
         />
@@ -68,15 +66,15 @@ class New extends Component {
         <input
           type="text"
           name="hashtags"
-          placeholder="Hashtags do post"
+          placeholder="Hashtags..."
           onChange={this.handleChange}
           value={this.state.hashtags}
         />
 
-        <button type="submit">Enviar</button>
+        <button type="submit">Submit</button>
       </form>
-    )
+    );
   }
 }
 
-export default New
+export default New;
